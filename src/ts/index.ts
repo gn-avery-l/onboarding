@@ -116,3 +116,13 @@ function setupEventListeners(): void {
   }
 }
 
+// Expose state for E2E testing (only in dev mode)
+if (import.meta.env.DEV) {
+  // @ts-ignore - Expose for E2E tests
+  window.state = state;
+  // @ts-ignore
+  window.renderStrokeLayer = renderStrokeLayer;
+  // @ts-ignore
+  window.renderBackgroundLayer = renderBackgroundLayer;
+}
+
