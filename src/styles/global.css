@@ -1,13 +1,3 @@
-:root {
-  --primary: #262626;
-  --secondary: #171717;
-  --tertiary: #404040;
-  --color-dark: #303030;
-  --color-light: #f3f3f3;
-  --accent-primary: #2563eb;
-  --accent-primary-state: #1e40af;
-}
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -38,26 +28,94 @@ body {
   background-color: white;
 }
 
-nav {
-  display: flex;
-  justify-content: space-between;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
-nav h1 {
-  display: block;
-  font-weight: 500;
-  padding: 1rem;
-}
-
 main {
   height: 100%;
   left: 0;
-  position: absoute;
+  position: absolute;
   top: 0;
   width: 100%;
+}
+
+#canvases {
+  display: block;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  touch-action: none;
+  width: 100%;
+}
+
+#canvases canvas {
+  display: inherit;
+  height: inherit;
+  left: inherit;
+  position: inherit;
+  top: inherit;
+  touch-action: inherit;
+  width: inherit;
+}
+
+canvas.stroke {
+  z-index: 2;
+}
+
+canvas.stroke.erase-mode {
+  cursor:
+    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="%23000000" width="42px" height="42px" viewBox="0 0 42 42"><circle cx="21" cy="21" r="20"/></svg>')
+      20 20,
+    auto;
+}
+
+#debug {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 99;
+}
+
+div.buttons button {
+  display: block;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid #333;
+  border-radius: 4px;
+}
+
+div.buttons button + button,
+div.buttons + div.info,
+div.info p + p {
+  margin-top: 0.5rem;
+}
+
+#background-picker {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-top: 1px solid #333;
+  z-index: 99;
+}
+
+#background-picker div {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.background-option {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+  background-color: white;
+  border: 1px solid #333;
+  border-radius: 4px;
 }
 
