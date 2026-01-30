@@ -1,12 +1,10 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- ESSENTIAL -->
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- GENERAL -->
     <title>Avery's onboarding</title>
     <meta name="title" content="Avery's onboarding" />
 
@@ -21,11 +19,41 @@
       Enable JavaScript to enjoy all the features of this app.
     </noscript>
 
-    <nav>
-      <h1>Avery's onboarding</h1>
-    </nav>
-
-    <main></main>
+    <main>
+      <div id="canvases">
+        <canvas class="background">
+          Your browser does not support the canvas element.
+        </canvas>
+        <canvas class="stroke">
+          Your browser does not support the canvas element.
+        </canvas>
+      </div>
+      <div id="debug">
+        <div class="buttons">
+          <button class="clear">Clear canvas</button>
+          <button class="reset">Reset canvas</button>
+          <button class="strokes">Debug strokes</button>
+        </div>
+        <div class="info">
+          <p class="gesture">Gesture: <span>none</span></p>
+          <p class="touches">Touches: <span>0</span></p>
+          <p class="pan">Pan: <span>0, 0</span></p>
+          <p class="zoom">Zoom: <span>100%</span></p>
+          <p class="strokes">Debug strokes: <span>false</span></p>
+        </div>
+      </div>
+      <div id="background-picker">
+        <p>Choose a background:</p>
+        <div>
+          <button class="background-option" data-bg="blank">Blank</button>
+          <button class="background-option" data-bg="nature">Nature</button>
+          <button class="background-option" data-bg="abstract">Abstract</button>
+          <button class="background-option" data-bg="city">City</button>
+          <button class="background-option" data-bg="pattern">Pattern</button>
+          <button class="background-option" data-bg="texture">Texture</button>
+        </div>
+      </div>
+    </main>
   </body>
 
   <script type="module" src="src/ts/index.ts"></script>
