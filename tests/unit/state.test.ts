@@ -5,7 +5,7 @@ import {
   addStroke,
   clearStrokes,
   clearBackground
-} from '../../src/ts/state';
+} from '../../src/ts/core/state';
 
 describe('updateViewTransform', () => {
   beforeEach(() => {

@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { screenToWorld, worldToScreen } from '../../../src/ts/utils/transform';
+import { screenToWorld, worldToScreen } from '../../../src/ts/core/utils/transform';
 
 describe('screenToWorld', () => {
   test('identity transform at default zoom and pan', () => {

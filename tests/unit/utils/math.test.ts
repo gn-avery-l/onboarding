@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { distance, generateId } from '../../../src/ts/utils/math';
+import { distance, generateId } from '../../../src/ts/core/utils/math';
 
 describe('distance', () => {
   test('same point returns 0', () => {
