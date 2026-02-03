@@ -6,6 +6,7 @@ export class CanvasManager {
   private strokeCanvas: HTMLCanvasElement;
   private backgroundCtx: CanvasRenderingContext2D;
   private strokeCtx: CanvasRenderingContext2D;
+  private initialized: boolean = false;
 
   constructor() {
     this.backgroundCanvas = document.querySelector(
@@ -53,9 +54,8 @@ export class CanvasManager {
     this.backgroundCtx.fillStyle = '#ffffff';
     this.backgroundCtx.fillRect(0, 0, width, height);
 
-    // Only render if we're not in initial construction
-    // (platform needs to be initialized first)
-    if ((window as any).__platformInitialized) {
+    // Only render if platform has been initialized
+    if (this.initialized) {
       this.renderAll();
     }
   }
@@ -63,6 +63,10 @@ export class CanvasManager {
   public renderAll(): void {
     renderBackgroundLayer();
     renderStrokeLayer();
+  }
+
+  public markInitialized(): void {
+    this.initialized = true;
   }
 
   public getBackgroundContext(): CanvasRenderingContext2D {

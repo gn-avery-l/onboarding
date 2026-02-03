@@ -40,8 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
     strokeRenderer
   });
 
-  // Mark platform as initialized for canvas resize handler
-  (window as any).__platformInitialized = true;
+  // Mark canvas manager as initialized so resize handler can safely render
+  canvasManager.markInitialized();
 
   // Initial render now that platform is ready
   canvasManager.renderAll();
