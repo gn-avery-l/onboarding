@@ -34,7 +34,7 @@ export enum GestureType {
 }
 
 export interface TouchInfo {
-  id: number;
+  id: number | string;  // Changed to support various platforms
   startX: number;
   startY: number;
   currentX: number;
@@ -44,7 +44,7 @@ export interface TouchInfo {
 
 export interface GestureState {
   currentGesture: GestureType;
-  touches: Map<number, TouchInfo>;
+  touches: Map<number | string, TouchInfo>;  // Changed key type
   isEraseKeyPressed: boolean;
   initialPinchDistance?: number;
   initialZoom?: number;
@@ -55,7 +55,7 @@ export interface BackgroundImage {
   url: string;
   thumbnail: string;
   loaded: boolean;
-  image?: HTMLImageElement;
+  image?: any;  // Changed from HTMLImageElement to be platform-agnostic
 }
 
 export interface BackgroundState {
@@ -70,10 +70,6 @@ export interface AppState {
   view: ViewState;
   gesture: GestureState;
   background: BackgroundState;
-  canvases: {
-    background: HTMLCanvasElement | null;
-    strokes: HTMLCanvasElement | null;
-  };
   debug: {
     gestureType: string;
     touchCount: number;
@@ -83,4 +79,3 @@ export interface AppState {
     showStrokePoints: boolean;
   };
 }
-

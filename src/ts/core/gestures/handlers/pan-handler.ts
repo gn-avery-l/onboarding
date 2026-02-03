@@ -3,13 +3,15 @@ import { state, updateViewTransform } from '../../state';
 import { renderBackgroundLayer } from '../../canvas/background-layer';
 import { renderStrokeLayer } from '../../canvas/stroke-layer';
 import { type Point } from '../../types';
+import { type PointerInputEvent } from '../../platform/input-adapter';
+import { getPlatform } from '../../platform/platform-context';
 
 export class PanHandler implements GestureHandler {
   private startPanX: number = 0;
   private startPanY: number = 0;
   private initialTouches: Point[] = [];
 
-  onStart(_event: PointerEvent): void {
+  onStart(_event: PointerInputEvent): void {
     this.startPanX = state.view.panX;
     this.startPanY = state.view.panY;
 
@@ -21,7 +23,7 @@ export class PanHandler implements GestureHandler {
     );
   }
 
-  onMove(_event: PointerEvent): void {
+  onMove(_event: PointerInputEvent): void {
     if (state.gesture.touches.size !== 2) {
       return;
     }
@@ -49,14 +51,13 @@ export class PanHandler implements GestureHandler {
     state.debug.panX = state.view.panX;
     state.debug.panY = state.view.panY;
 
-    requestAnimationFrame(() => {
+    getPlatform().scheduler.scheduleRender(() => {
       renderBackgroundLayer();
       renderStrokeLayer();
     });
   }
 
-  onEnd(_event: PointerEvent): void {
+  onEnd(_event: PointerInputEvent): void {
     // Nothing to clean up
   }
 }
-

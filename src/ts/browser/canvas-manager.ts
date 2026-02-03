@@ -1,6 +1,5 @@
-import { state } from '../state';
-import { renderBackgroundLayer } from './background-layer';
-import { renderStrokeLayer } from './stroke-layer';
+import { renderBackgroundLayer } from '../core/canvas/background-layer';
+import { renderStrokeLayer } from '../core/canvas/stroke-layer';
 
 export class CanvasManager {
   private backgroundCanvas: HTMLCanvasElement;
@@ -30,9 +29,6 @@ export class CanvasManager {
       throw new Error('Failed to get canvas contexts');
     }
 
-    state.canvases.background = this.backgroundCanvas;
-    state.canvases.strokes = this.strokeCanvas;
-
     this.backgroundCtx.fillStyle = '#ffffff';
     this.backgroundCtx.fillRect(
       0,
@@ -57,7 +53,11 @@ export class CanvasManager {
     this.backgroundCtx.fillStyle = '#ffffff';
     this.backgroundCtx.fillRect(0, 0, width, height);
 
-    this.renderAll();
+    // Only render if we're not in initial construction
+    // (platform needs to be initialized first)
+    if ((window as any).__platformInitialized) {
+      this.renderAll();
+    }
   }
 
   public renderAll(): void {
@@ -80,4 +80,3 @@ export function initCanvasManager(): CanvasManager {
   canvasManager = new CanvasManager();
   return canvasManager;
 }
-

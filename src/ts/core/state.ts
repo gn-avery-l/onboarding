@@ -25,10 +25,6 @@ export const state: AppState = {
     availableBackgrounds: [],
     pickerVisible: false
   },
-  canvases: {
-    background: null,
-    strokes: null
-  },
   debug: {
     gestureType: 'none',
     touchCount: 0,
@@ -66,4 +62,3 @@ export function clearStrokes(): void {
 export function clearBackground(): void {
   state.background.currentBackground = null;
 }
-

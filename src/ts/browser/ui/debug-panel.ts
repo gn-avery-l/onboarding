@@ -1,4 +1,4 @@
-import { state } from '../state';
+import { state } from '../../core/state';
 
 export class DebugPanel {
   private gestureElement: HTMLElement;
@@ -25,4 +25,3 @@ export class DebugPanel {
       : 'false';
   }
 }
-
