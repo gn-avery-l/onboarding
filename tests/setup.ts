@@ -3,8 +3,9 @@
 
 // Mock HTMLCanvasElement if needed
 if (typeof HTMLCanvasElement !== 'undefined') {
-  HTMLCanvasElement.prototype.getContext = function () {
+  HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement) {
     return {
+      canvas: this,
       fillStyle: '',
       strokeStyle: '',
       lineWidth: 1,
@@ -22,7 +23,8 @@ if (typeof HTMLCanvasElement !== 'undefined') {
       save: () => {},
       restore: () => {},
       translate: () => {},
-      scale: () => {}
+      scale: () => {},
+      drawImage: () => {}
     } as any;
   };
 }

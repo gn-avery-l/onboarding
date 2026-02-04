@@ -5,6 +5,8 @@ import { renderStrokeLayer } from '../../canvas/stroke-layer';
 import { distance } from '../../utils/math';
 import { screenToWorld, worldToScreen } from '../../utils/transform';
 import { type Point } from '../../types';
+import { type PointerInputEvent } from '../../platform/input-adapter';
+import { getPlatform } from '../../platform/platform-context';
 
 export class ZoomHandler implements GestureHandler {
   private initialDistance: number = 0;
@@ -13,7 +15,7 @@ export class ZoomHandler implements GestureHandler {
   private readonly ZOOM_SENSITIVITY = 0.005;
   private readonly MIN_DISTANCE = 50;
 
-  onStart(_event: PointerEvent): void {
+  onStart(_event: PointerInputEvent): void {
     if (state.gesture.touches.size !== 2) {
       return;
     }
@@ -29,7 +31,7 @@ export class ZoomHandler implements GestureHandler {
     };
   }
 
-  onMove(_event: PointerEvent): void {
+  onMove(_event: PointerInputEvent): void {
     if (state.gesture.touches.size !== 2 || this.initialDistance === 0) {
       return;
     }
@@ -73,13 +75,13 @@ export class ZoomHandler implements GestureHandler {
     state.debug.panX = state.view.panX;
     state.debug.panY = state.view.panY;
 
-    requestAnimationFrame(() => {
+    getPlatform().scheduler.scheduleRender(() => {
       renderBackgroundLayer();
       renderStrokeLayer();
     });
   }
 
-  onEnd(_event: PointerEvent): void {
+  onEnd(_event: PointerInputEvent): void {
     state.gesture.initialPinchDistance = undefined;
   }
 }

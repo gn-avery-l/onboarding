@@ -1,12 +1,12 @@
-import { state } from '../state';
-import { renderBackgroundLayer } from './background-layer';
-import { renderStrokeLayer } from './stroke-layer';
+import { renderBackgroundLayer } from '../core/canvas/background-layer';
+import { renderStrokeLayer } from '../core/canvas/stroke-layer';
 
 export class CanvasManager {
   private backgroundCanvas: HTMLCanvasElement;
   private strokeCanvas: HTMLCanvasElement;
   private backgroundCtx: CanvasRenderingContext2D;
   private strokeCtx: CanvasRenderingContext2D;
+  private initialized: boolean = false;
 
   constructor() {
     this.backgroundCanvas = document.querySelector(
@@ -29,9 +29,6 @@ export class CanvasManager {
     if (!this.backgroundCtx || !this.strokeCtx) {
       throw new Error('Failed to get canvas contexts');
     }
-
-    state.canvases.background = this.backgroundCanvas;
-    state.canvases.strokes = this.strokeCanvas;
 
     this.backgroundCtx.fillStyle = '#ffffff';
     this.backgroundCtx.fillRect(
@@ -57,12 +54,19 @@ export class CanvasManager {
     this.backgroundCtx.fillStyle = '#ffffff';
     this.backgroundCtx.fillRect(0, 0, width, height);
 
-    this.renderAll();
+    // Only render if platform has been initialized
+    if (this.initialized) {
+      this.renderAll();
+    }
   }
 
   public renderAll(): void {
     renderBackgroundLayer();
     renderStrokeLayer();
+  }
+
+  public markInitialized(): void {
+    this.initialized = true;
   }
 
   public getBackgroundContext(): CanvasRenderingContext2D {
@@ -80,4 +84,3 @@ export function initCanvasManager(): CanvasManager {
   canvasManager = new CanvasManager();
   return canvasManager;
 }
-

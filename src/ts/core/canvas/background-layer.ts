@@ -1,30 +1,26 @@
 import { state } from '../state';
-import { canvasManager } from './canvas-manager';
 import { screenToWorld } from '../utils/transform';
+import { getPlatform } from '../platform/platform-context';
 
 export function renderBackgroundLayer(): void {
-  if (!canvasManager) {
-    return;
-  }
+  const renderer = getPlatform().backgroundRenderer;
+  const ctx = renderer.getContext();
 
-  const ctx = canvasManager.getBackgroundContext();
-  const canvas = ctx.canvas;
-
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  renderer.setFillStyle('#ffffff');
+  renderer.fillRect(0, 0, ctx.width, ctx.height);
 
   if (state.background.currentBackground?.loaded) {
     const img = state.background.currentBackground.image!;
 
-    ctx.save();
-    ctx.translate(state.view.panX, state.view.panY);
-    ctx.scale(state.view.zoom, state.view.zoom);
+    renderer.save();
+    renderer.translate(state.view.panX, state.view.panY);
+    renderer.scale(state.view.zoom, state.view.zoom);
 
     const imgWidth = img.width;
     const imgHeight = img.height;
 
     const topLeft = screenToWorld(0, 0);
-    const bottomRight = screenToWorld(canvas.width, canvas.height);
+    const bottomRight = screenToWorld(ctx.width, ctx.height);
 
     const startX = Math.floor(topLeft.x / imgWidth) * imgWidth;
     const startY = Math.floor(topLeft.y / imgHeight) * imgHeight;
@@ -33,10 +29,10 @@ export function renderBackgroundLayer(): void {
 
     for (let x = startX; x < endX; x += imgWidth) {
       for (let y = startY; y < endY; y += imgHeight) {
-        ctx.drawImage(img, x, y, imgWidth, imgHeight);
+        renderer.drawImage(img, x, y, imgWidth, imgHeight);
       }
     }
 
-    ctx.restore();
+    renderer.restore();
   }
 }

@@ -1,6 +1,6 @@
-import { state } from '../state';
-import { renderBackgroundLayer } from '../canvas/background-layer';
-import { type BackgroundImage } from '../types';
+import { state } from '../../core/state';
+import { renderBackgroundLayer } from '../../core/canvas/background-layer';
+import { type BackgroundImage } from '../../core/types';
 
 export class BackgroundPicker {
   private backgroundUrls: Record<string, string> = {

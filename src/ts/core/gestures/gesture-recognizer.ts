@@ -6,6 +6,10 @@ import { PanHandler } from './handlers/pan-handler';
 import { ZoomHandler } from './handlers/zoom-handler';
 import { EraseHandler } from './handlers/erase-handler';
 import { distance } from '../utils/math';
+import {
+  type PointerInputEvent,
+  type KeyInputEvent
+} from '../platform/input-adapter';
 
 export class GestureRecognizer {
   private handlers: Map<GestureType, GestureHandler>;
@@ -66,18 +70,23 @@ export class GestureRecognizer {
   private endGesture(): void {
     const handler = this.handlers.get(state.gesture.currentGesture);
     if (handler) {
-      const event = new PointerEvent('pointerup');
-      handler.onEnd(event);
+      // Create a dummy event for onEnd - coordinates don't matter for ending
+      const dummyEvent: PointerInputEvent = {
+        pointerId: 0,
+        x: 0,
+        y: 0
+      };
+      handler.onEnd(dummyEvent);
     }
   }
 
-  public handlePointerDown(event: PointerEvent): void {
+  public handlePointerDown(event: PointerInputEvent): void {
     const touchInfo: TouchInfo = {
       id: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      currentX: event.clientX,
-      currentY: event.clientY,
+      startX: event.x,
+      startY: event.y,
+      currentX: event.x,
+      currentY: event.y,
       startTime: Date.now()
     };
 
@@ -97,14 +106,14 @@ export class GestureRecognizer {
     }
   }
 
-  public handlePointerMove(event: PointerEvent): void {
+  public handlePointerMove(event: PointerInputEvent): void {
     if (!state.gesture.touches.has(event.pointerId)) {
       return;
     }
 
     const touch = state.gesture.touches.get(event.pointerId)!;
-    touch.currentX = event.clientX;
-    touch.currentY = event.clientY;
+    touch.currentX = event.x;
+    touch.currentY = event.y;
 
     const newGesture = this.determineGesture();
     if (newGesture !== state.gesture.currentGesture) {
@@ -122,7 +131,7 @@ export class GestureRecognizer {
     }
   }
 
-  public handlePointerUp(event: PointerEvent): void {
+  public handlePointerUp(event: PointerInputEvent): void {
     const handler = this.handlers.get(state.gesture.currentGesture);
     if (handler) {
       handler.onEnd(event);
@@ -147,7 +156,7 @@ export class GestureRecognizer {
     }
   }
 
-  public handleKeyDown(event: KeyboardEvent): void {
+  public handleKeyDown(event: KeyInputEvent): void {
     if (event.key === 'e' || event.key === 'E') {
       state.gesture.isEraseKeyPressed = true;
 
@@ -158,7 +167,7 @@ export class GestureRecognizer {
     }
   }
 
-  public handleKeyUp(event: KeyboardEvent): void {
+  public handleKeyUp(event: KeyInputEvent): void {
     if (event.key === 'e' || event.key === 'E') {
       state.gesture.isEraseKeyPressed = false;
 
@@ -171,4 +180,3 @@ export class GestureRecognizer {
     }
   }
 }
-

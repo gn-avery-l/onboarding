@@ -4,20 +4,22 @@ import { screenToWorld } from '../../utils/transform';
 import { distance, generateId } from '../../utils/math';
 import { renderStrokeLayer } from '../../canvas/stroke-layer';
 import { type Stroke, type Point } from '../../types';
+import { type PointerInputEvent } from '../../platform/input-adapter';
+import { getPlatform } from '../../platform/platform-context';
 
 export class EraseHandler implements GestureHandler {
-  private readonly ERASE_RADIUS = 5;
+  private readonly ERASE_RADIUS = 20;
 
-  onStart(event: PointerEvent): void {
-    this.eraseAtPoint(event.clientX, event.clientY);
+  onStart(event: PointerInputEvent): void {
+    this.eraseAtPoint(event.x, event.y);
   }
 
-  onMove(event: PointerEvent): void {
-    this.eraseAtPoint(event.clientX, event.clientY);
+  onMove(event: PointerInputEvent): void {
+    this.eraseAtPoint(event.x, event.y);
   }
 
-  onEnd(event: PointerEvent): void {
-    this.eraseAtPoint(event.clientX, event.clientY);
+  onEnd(event: PointerInputEvent): void {
+    this.eraseAtPoint(event.x, event.y);
   }
 
   private eraseAtPoint(screenX: number, screenY: number): void {
@@ -41,7 +43,7 @@ export class EraseHandler implements GestureHandler {
         // Stroke untouched, no need to recreate
         strokesModified[i] = false;
       } else {
-        // STroke partialy erased, replace with segments
+        // Stroke partially erased, replace with segments
         strokesModified[i] = true;
         newStrokes.push(...segments);
       }
@@ -51,7 +53,7 @@ export class EraseHandler implements GestureHandler {
       state.strokes = state.strokes
         .filter((_, i) => !strokesModified[i])
         .concat(newStrokes);
-      requestAnimationFrame(() => renderStrokeLayer());
+      getPlatform().scheduler.scheduleRender(() => renderStrokeLayer());
     }
   }
 
@@ -99,4 +101,3 @@ export class EraseHandler implements GestureHandler {
     return segments;
   }
 }
-

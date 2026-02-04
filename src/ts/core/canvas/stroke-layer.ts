@@ -1,34 +1,29 @@
 import { state } from '../state';
-import { canvasManager } from './canvas-manager';
 import { type Point } from '../types';
+import { getPlatform } from '../platform/platform-context';
+import { type RenderAdapter } from '../platform/render-adapter';
 
 const STROKE_COLOUR = '#000000';
 const STROKE_COLOUR_NEW = '#ff0000';
 const STROKE_WIDTH = 2;
 
 export function renderStrokeLayer(): void {
-  if (!canvasManager) {
-    return;
-  }
+  const renderer = getPlatform().strokeRenderer;
+  renderer.clear();
 
-  const ctx = canvasManager.getStrokeContext();
-  const canvas = ctx.canvas;
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  ctx.save();
-  ctx.translate(state.view.panX, state.view.panY);
-  ctx.scale(state.view.zoom, state.view.zoom);
+  renderer.save();
+  renderer.translate(state.view.panX, state.view.panY);
+  renderer.scale(state.view.zoom, state.view.zoom);
 
   // Existing strokes
   for (const stroke of state.strokes) {
-    renderStrokePoints(ctx, stroke.points, STROKE_COLOUR, STROKE_WIDTH);
+    renderStrokePoints(renderer, stroke.points, STROKE_COLOUR, STROKE_WIDTH);
   }
 
   // Newly drawn strokes
   if (state.currentStroke) {
     renderStrokePoints(
-      ctx,
+      renderer,
       state.currentStroke.points,
       STROKE_COLOUR,
       STROKE_WIDTH
@@ -37,14 +32,14 @@ export function renderStrokeLayer(): void {
 
   // Debug visualisation
   if (state.debug.showStrokePoints) {
-    renderDebugPoints(ctx);
+    renderDebugPoints(renderer);
   }
 
-  ctx.restore();
+  renderer.restore();
 }
 
 function renderStrokePoints(
-  ctx: CanvasRenderingContext2D,
+  renderer: RenderAdapter,
   points: Point[],
   color: string,
   width: number
@@ -53,22 +48,19 @@ function renderStrokePoints(
     return;
   }
 
-  ctx.strokeStyle = color;
-  ctx.lineWidth = width;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
+  renderer.setStrokeStyle(color, width);
 
-  ctx.beginPath();
-  ctx.moveTo(points[0].x, points[0].y);
+  renderer.beginPath();
+  renderer.moveTo(points[0].x, points[0].y);
 
   for (let i = 1; i < points.length; i++) {
-    ctx.lineTo(points[i].x, points[i].y);
+    renderer.lineTo(points[i].x, points[i].y);
   }
 
-  ctx.stroke();
+  renderer.stroke();
 }
 
-function renderDebugPoints(ctx: CanvasRenderingContext2D): void {
+function renderDebugPoints(renderer: RenderAdapter): void {
   // Render debug circles for all completed strokes
   for (const stroke of state.strokes) {
     if (stroke.points.length === 0) {
@@ -81,24 +73,21 @@ function renderDebugPoints(ctx: CanvasRenderingContext2D): void {
       const isStart = i === 0;
       const isEnd = i === stroke.points.length - 1;
 
-      ctx.beginPath();
-      ctx.arc(
+      renderer.arc(
         point.x,
         point.y,
-        isStart || isEnd ? 8 : 4, // Bigger circles at start/end
-        0,
-        Math.PI * 2
+        isStart || isEnd ? 8 : 4 // Bigger circles at start/end
       );
 
       if (isStart) {
-        ctx.fillStyle = '#00ff00'; // Green for start
+        renderer.setFillStyle('#00ff00'); // Green for start
       } else if (isEnd) {
-        ctx.fillStyle = '#ff0000'; // Red for end
+        renderer.setFillStyle('#ff0000'); // Red for end
       } else {
-        ctx.fillStyle = '#0000ff'; // Blue for middle points
+        renderer.setFillStyle('#0000ff'); // Blue for middle points
       }
 
-      ctx.fill();
+      renderer.fill();
     }
   }
 
@@ -109,18 +98,17 @@ function renderDebugPoints(ctx: CanvasRenderingContext2D): void {
       const isStart = i === 0;
       const isEnd = i === state.currentStroke.points.length - 1;
 
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, isStart || isEnd ? 4 : 2, 0, Math.PI * 2);
+      renderer.arc(point.x, point.y, isStart || isEnd ? 4 : 2);
 
       if (isStart) {
-        ctx.fillStyle = '#00ff00';
+        renderer.setFillStyle('#00ff00');
       } else if (isEnd) {
-        ctx.fillStyle = '#ffff00'; // Yellow for current end
+        renderer.setFillStyle('#ffff00'); // Yellow for current end
       } else {
-        ctx.fillStyle = '#00ffff'; // Cyan for current middle
+        renderer.setFillStyle('#00ffff'); // Cyan for current middle
       }
 
-      ctx.fill();
+      renderer.fill();
     }
   }
 }
